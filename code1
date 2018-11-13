@@ -1,0 +1,45 @@
+from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+import urllib.request as req
+import re, csv, time
+
+
+with open("text_for_write.txt", 'wt') as f:
+      f.write('')
+f.close()
+
+
+html0 = "https://okwave.jp/searchkeyword/?word=%E5%9C%B0%E9%9C%87&sort=date&order=desc&target%5B0%5D=ques_title&target%5B1%5D=ques_text&target%5B2%5D=best_answer&date=all&page="
+
+lists = []
+
+for i in range(5):
+    ii = str(i + 1)
+    print(ii)
+    url = html0 + ii
+    res = req.urlopen(url)
+    soup = BeautifulSoup(res,"html.parser")
+    
+    for e in range(10):
+        ee = str(e + 1)
+        sp = 'div.autopagerize_page_element > div:nth-of-type(' + ee + ')'
+        lis = soup.select(sp)
+
+        a = lis[0].a
+        tlis = a.attrs['href']
+        qaurl = urljoin("https://okwave.jp", tlis)
+        lists.append(qaurl)            
+    time.sleep(3)
+        
+print(lists[1])
+strs = '\n'.join(lists)
+
+with open("text_for_write.txt", 'a') as f:
+    for ele in lists:
+      f.write(ele+'\n')
+f.close()
+
+t = datetime.date.today()
+fname = t.strftime("%Y-%m-%d") + ".json"
+with open(fname, "w", encoding="utf-8") as f:
+    f.write(json_str)
